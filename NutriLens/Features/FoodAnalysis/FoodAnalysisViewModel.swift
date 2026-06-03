@@ -2,6 +2,7 @@ import SwiftUI
 import PhotosUI
 
 @Observable
+@MainActor
 class FoodAnalysisViewModel {
     var selectedPhotoItem: PhotosPickerItem?
     var selectedImage: UIImage?
@@ -17,30 +18,22 @@ class FoodAnalysisViewModel {
         guard let item else { return }
         guard let data = try? await item.loadTransferable(type: Data.self),
               let image = UIImage(data: data) else { return }
-        await MainActor.run {
-            self.selectedImage = image
-        }
+        selectedImage = image
     }
 
     func analyze() async {
         guard let image = selectedImage else { return }
-        await MainActor.run {
-            isAnalyzing = true
-            error = nil
-        }
+        isAnalyzing = true
+        error = nil
         do {
             let result = try await AIAnalysisService.shared.analyzeFood(image: image)
-            await MainActor.run {
-                self.nutritionInfo = result
-                self.isAnalyzing = false
-                self.showResult = true
-            }
+            nutritionInfo = result
+            isAnalyzing = false
+            showResult = true
         } catch {
-            await MainActor.run {
-                self.error = error.localizedDescription
-                self.showError = true
-                self.isAnalyzing = false
-            }
+            self.error = error.localizedDescription
+            showError = true
+            isAnalyzing = false
         }
     }
 

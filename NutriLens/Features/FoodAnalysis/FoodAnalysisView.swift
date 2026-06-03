@@ -52,7 +52,7 @@ struct FoodAnalysisView: View {
                 Text(viewModel.error ?? "未知错误")
             }
             .onChange(of: viewModel.selectedPhotoItem) { _, newItem in
-                Task { await viewModel.loadImage(from: newItem) }
+                Task { @MainActor in await viewModel.loadImage(from: newItem) }
             }
         }
     }
@@ -153,7 +153,7 @@ struct FoodAnalysisView: View {
 
     private var analyzeButton: some View {
         Button {
-            Task { await viewModel.analyze() }
+            Task { @MainActor in await viewModel.analyze() }
         } label: {
             Group {
                 if viewModel.isAnalyzing {
