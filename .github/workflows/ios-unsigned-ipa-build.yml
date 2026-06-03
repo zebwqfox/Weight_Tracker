@@ -1,0 +1,104 @@
+name: iOS Unsigned IPA Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "NutriLens/**"
+      - "NutriLens.xcodeproj/**"
+      - ".github/workflows/ios-unsigned-ipa-build.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "NutriLens/**"
+      - "NutriLens.xcodeproj/**"
+
+jobs:
+  build-ios-unsigned-ipa:
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: List available Xcode versions
+        run: ls /Applications | grep -i xcode || true
+
+      - name: Select latest Xcode
+        run: |
+          # Prefer Xcode with iOS 26 SDK
+          for VERSION in 26.3 26.2 26.1 26.0 16.4 16.3 16.2 16.1 16.0; do
+            XCODE_APP="/Applications/Xcode_${VERSION}.app"
+            if [ -d "$XCODE_APP" ]; then
+              echo "Using $XCODE_APP"
+              sudo xcode-select -s "$XCODE_APP"
+              break
+            fi
+          done
+          # Fallback: use whatever xcode-select already points to
+          echo "Active Xcode: $(xcode-select -p)"
+
+      - name: Verify Xcode & SDK
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphoneos || true
+
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild \
+            -project NutriLens.xcodeproj \
+            -scheme NutriLens \
+            -resolvePackageDependencies \
+            || true
+
+      - name: Build iOS (no codesign)
+        run: |
+          xcodebuild \
+            -project NutriLens.xcodeproj \
+            -scheme NutriLens \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            clean build \
+            | xcpretty --color || (cat /tmp/xcode-build.log && exit 1)
+        env:
+          DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+
+      - name: Find built .app
+        id: find_app
+        run: |
+          APP=$(find "$RUNNER_TEMP/DerivedData" -name "NutriLens.app" -type d | head -1)
+          echo "app_path=$APP" >> "$GITHUB_OUTPUT"
+          echo "Found: $APP"
+
+      - name: Verify app binary
+        run: |
+          APP="${{ steps.find_app.outputs.app_path }}"
+          file "$APP/NutriLens"
+          xcrun lipo -info "$APP/NutriLens"
+          du -sh "$APP"
+
+      - name: Package unsigned IPA (Sideloadly-ready)
+        run: |
+          APP="${{ steps.find_app.outputs.app_path }}"
+          STAGING="$RUNNER_TEMP/ipa-staging"
+          mkdir -p "$STAGING/Payload"
+          cp -R "$APP" "$STAGING/Payload/"
+          cd "$STAGING"
+          zip -qry NutriLens-unsigned.ipa Payload
+          ls -lh NutriLens-unsigned.ipa
+
+      - name: Upload unsigned IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NutriLens-unsigned-ipa
+          path: ${{ runner.temp }}/ipa-staging/NutriLens-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14

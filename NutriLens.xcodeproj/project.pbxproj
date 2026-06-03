@@ -1,0 +1,448 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AABBCC000000000000000701 /* NutriLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000601 /* NutriLensApp.swift */; };
+		AABBCC000000000000000702 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000602 /* ContentView.swift */; };
+		AABBCC000000000000000703 /* FoodAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000603 /* FoodAnalysisView.swift */; };
+		AABBCC000000000000000704 /* FoodAnalysisViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000604 /* FoodAnalysisViewModel.swift */; };
+		AABBCC000000000000000705 /* FoodResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000605 /* FoodResultView.swift */; };
+		AABBCC000000000000000706 /* DailyFoodLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000606 /* DailyFoodLogView.swift */; };
+		AABBCC000000000000000707 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000607 /* QRScannerView.swift */; };
+		AABBCC000000000000000708 /* QRScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000608 /* QRScannerViewModel.swift */; };
+		AABBCC000000000000000709 /* OAuthLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000609 /* OAuthLoginView.swift */; };
+		AABBCC00000000000000070A /* WeightToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060A /* WeightToolsView.swift */; };
+		AABBCC00000000000000070B /* FoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060B /* FoodEntry.swift */; };
+		AABBCC00000000000000070C /* NutritionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060C /* NutritionInfo.swift */; };
+		AABBCC00000000000000070D /* WeightEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060D /* WeightEntry.swift */; };
+		AABBCC00000000000000070E /* AIAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060E /* AIAnalysisService.swift */; };
+		AABBCC00000000000000070F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060F /* Assets.xcassets */; };
+		AABBCC000000000000000710 /* APIKeySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000611 /* APIKeySettingsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AABBCC000000000000000600 /* NutriLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NutriLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABBCC000000000000000601 /* NutriLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutriLensApp.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000602 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000603 /* FoodAnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAnalysisView.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000604 /* FoodAnalysisViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAnalysisViewModel.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000605 /* FoodResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodResultView.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000606 /* DailyFoodLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyFoodLogView.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000607 /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000608 /* QRScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewModel.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000609 /* OAuthLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthLoginView.swift; sourceTree = "<group>"; };
+		AABBCC00000000000000060A /* WeightToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightToolsView.swift; sourceTree = "<group>"; };
+		AABBCC00000000000000060B /* FoodEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntry.swift; sourceTree = "<group>"; };
+		AABBCC00000000000000060C /* NutritionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionInfo.swift; sourceTree = "<group>"; };
+		AABBCC00000000000000060D /* WeightEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightEntry.swift; sourceTree = "<group>"; };
+		AABBCC00000000000000060E /* AIAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalysisService.swift; sourceTree = "<group>"; };
+		AABBCC00000000000000060F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AABBCC000000000000000611 /* APIKeySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySettingsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AABBCC0000000000000002B0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AABBCC0000000000000000B0 /* main group */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC0000000000000005A0 /* NutriLens */,
+				AABBCC0000000000000000C0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AABBCC0000000000000000C0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC000000000000000600 /* NutriLens.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AABBCC0000000000000005A0 /* NutriLens */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC000000000000000601 /* NutriLensApp.swift */,
+				AABBCC000000000000000602 /* ContentView.swift */,
+				AABBCC0000000000000005B0 /* Features */,
+				AABBCC00000000000000050F /* Models */,
+				AABBCC000000000000000510 /* Services */,
+				AABBCC00000000000000060F /* Assets.xcassets */,
+			);
+			path = NutriLens;
+			sourceTree = "<group>";
+		};
+		AABBCC0000000000000005B0 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC0000000000000005C0 /* FoodAnalysis */,
+				AABBCC0000000000000005D0 /* QRScanner */,
+				AABBCC0000000000000005E0 /* WeightTools */,
+				AABBCC000000000000000520 /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		AABBCC000000000000000520 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC000000000000000611 /* APIKeySettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		AABBCC0000000000000005C0 /* FoodAnalysis */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC000000000000000603 /* FoodAnalysisView.swift */,
+				AABBCC000000000000000604 /* FoodAnalysisViewModel.swift */,
+				AABBCC000000000000000605 /* FoodResultView.swift */,
+				AABBCC000000000000000606 /* DailyFoodLogView.swift */,
+			);
+			path = FoodAnalysis;
+			sourceTree = "<group>";
+		};
+		AABBCC0000000000000005D0 /* QRScanner */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC000000000000000607 /* QRScannerView.swift */,
+				AABBCC000000000000000608 /* QRScannerViewModel.swift */,
+				AABBCC000000000000000609 /* OAuthLoginView.swift */,
+			);
+			path = QRScanner;
+			sourceTree = "<group>";
+		};
+		AABBCC0000000000000005E0 /* WeightTools */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC00000000000000060A /* WeightToolsView.swift */,
+			);
+			path = WeightTools;
+			sourceTree = "<group>";
+		};
+		AABBCC00000000000000050F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC00000000000000060B /* FoodEntry.swift */,
+				AABBCC00000000000000060C /* NutritionInfo.swift */,
+				AABBCC00000000000000060D /* WeightEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AABBCC000000000000000510 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC00000000000000060E /* AIAnalysisService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AABBCC0000000000000001A0 /* NutriLens */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABBCC0000000000000003B0 /* Build configuration list for PBXNativeTarget "NutriLens" */;
+			buildPhases = (
+				AABBCC0000000000000002A0 /* Sources */,
+				AABBCC0000000000000002B0 /* Frameworks */,
+				AABBCC0000000000000002C0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NutriLens;
+			productName = NutriLens;
+			productReference = AABBCC000000000000000600 /* NutriLens.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AABBCC0000000000000000A0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					AABBCC0000000000000001A0 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = AABBCC0000000000000003A0 /* Build configuration list for PBXProject "NutriLens" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hans",
+			);
+			mainGroup = AABBCC0000000000000000B0;
+			productRefGroup = AABBCC0000000000000000C0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AABBCC0000000000000001A0 /* NutriLens */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AABBCC0000000000000002C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AABBCC00000000000000070F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AABBCC0000000000000002A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AABBCC000000000000000701 /* NutriLensApp.swift in Sources */,
+				AABBCC000000000000000702 /* ContentView.swift in Sources */,
+				AABBCC000000000000000703 /* FoodAnalysisView.swift in Sources */,
+				AABBCC000000000000000704 /* FoodAnalysisViewModel.swift in Sources */,
+				AABBCC000000000000000705 /* FoodResultView.swift in Sources */,
+				AABBCC000000000000000706 /* DailyFoodLogView.swift in Sources */,
+				AABBCC000000000000000707 /* QRScannerView.swift in Sources */,
+				AABBCC000000000000000708 /* QRScannerViewModel.swift in Sources */,
+				AABBCC000000000000000709 /* OAuthLoginView.swift in Sources */,
+				AABBCC00000000000000070A /* WeightToolsView.swift in Sources */,
+				AABBCC00000000000000070B /* FoodEntry.swift in Sources */,
+				AABBCC00000000000000070C /* NutritionInfo.swift in Sources */,
+				AABBCC00000000000000070D /* WeightEntry.swift in Sources */,
+				AABBCC00000000000000070E /* AIAnalysisService.swift in Sources */,
+				AABBCC000000000000000710 /* APIKeySettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AABBCC0000000000000004A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AABBCC0000000000000004B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AABBCC0000000000000004C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要访问摄像头来拍摄食物照片和扫描二维码";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册来选择食物照片";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nutrilens.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AABBCC0000000000000004D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要访问摄像头来拍摄食物照片和扫描二维码";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册来选择食物照片";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nutrilens.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AABBCC0000000000000003A0 /* Build configuration list for PBXProject "NutriLens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABBCC0000000000000004A0 /* Debug */,
+				AABBCC0000000000000004B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABBCC0000000000000003B0 /* Build configuration list for PBXNativeTarget "NutriLens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABBCC0000000000000004C0 /* Debug */,
+				AABBCC0000000000000004D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = AABBCC0000000000000000A0 /* Project object */;
+}

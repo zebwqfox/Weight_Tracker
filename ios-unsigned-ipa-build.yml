@@ -1,0 +1,76 @@
+name: iOS Unsigned IPA Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "**"
+      - ".github/workflows/ios-unsigned-ipa-build.yml"
+  pull_request:
+    paths:
+      - "**"
+      - ".github/workflows/ios-unsigned-ipa-build.yml"
+
+jobs:
+  build-ios-unsigned-ipa:
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: List available Xcode versions
+        run: ls /Applications | grep Xcode || true
+
+      - name: Select Xcode 26.3 if available
+        run: |
+          if [ -d /Applications/Xcode_26.3.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.3.app
+          else
+            echo "Xcode_26.3.app not found, fallback to default:"
+            xcode-select -p
+          fi
+
+      - name: Verify Xcode
+        run: xcodebuild -version
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS device app (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Verify app binary architecture and size
+        run: |
+          file build/ios/iphoneos/Runner.app/Runner
+          xcrun lipo -info build/ios/iphoneos/Runner.app/Runner
+          du -h build/ios/iphoneos/Runner.app
+
+      - name: Package unsigned IPA for Sideloadly
+        run: |
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -R Runner.app Payload/
+          zip -qry app-unsigned.ipa Payload
+
+      - name: Verify IPA size
+        run: |
+          ls -lh build/ios/iphoneos/app-unsigned.ipa
+
+      - name: Upload unsigned IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-unsigned-ipa-for-sideloadly
+          path: build/ios/iphoneos/app-unsigned.ipa
+          if-no-files-found: error
