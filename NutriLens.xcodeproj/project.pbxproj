@@ -23,6 +23,7 @@
 		AABBCC00000000000000070E /* AIAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060E /* AIAnalysisService.swift */; };
 		AABBCC00000000000000070F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060F /* Assets.xcassets */; };
 		AABBCC000000000000000710 /* APIKeySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000611 /* APIKeySettingsView.swift */; };
+		AABBCC000000000000000711 /* DeepSeekModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000612 /* DeepSeekModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		AABBCC00000000000000060E /* AIAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalysisService.swift; sourceTree = "<group>"; };
 		AABBCC00000000000000060F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AABBCC000000000000000611 /* APIKeySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySettingsView.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000612 /* DeepSeekModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 				AABBCC00000000000000060B /* FoodEntry.swift */,
 				AABBCC00000000000000060C /* NutritionInfo.swift */,
 				AABBCC00000000000000060D /* WeightEntry.swift */,
+				AABBCC000000000000000612 /* DeepSeekModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -236,6 +239,7 @@
 				AABBCC00000000000000070D /* WeightEntry.swift in Sources */,
 				AABBCC00000000000000070E /* AIAnalysisService.swift in Sources */,
 				AABBCC000000000000000710 /* APIKeySettingsView.swift in Sources */,
+				AABBCC000000000000000711 /* DeepSeekModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

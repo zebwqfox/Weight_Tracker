@@ -142,7 +142,7 @@ struct FoodAnalysisView: View {
                             viewModel.mealType = type
                         }
                         .buttonStyle(.bordered)
-                        .tint(viewModel.mealType == type ? .tint : .secondary)
+                        .tint(viewModel.mealType == type ? Color.accentColor : Color.secondary)
                         .fontWeight(viewModel.mealType == type ? .semibold : .regular)
                     }
                 }

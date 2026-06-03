@@ -474,7 +474,7 @@ struct FormulaRow: View {
             Text(value)
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundStyle(highlighted ? .tint : .primary)
+                .foregroundStyle(highlighted ? Color.accentColor : Color.primary)
         }
     }
 }

@@ -160,12 +160,8 @@ struct DataScannerRepresentable: UIViewControllerRepresentable {
         return scanner
     }
 
-    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
-        // Toggle torch
-        if viewModel.torchOn {
-            try? uiViewController.captureSession?.beginConfiguration()
-        }
-    }
+    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {}
+
 
     func makeCoordinator() -> Coordinator {
         Coordinator(viewModel: viewModel)
@@ -204,7 +200,7 @@ struct ScanLineView: View {
             Rectangle()
                 .fill(
                     LinearGradient(
-                        colors: [.clear, .tint.opacity(0.8), .clear],
+                        colors: [.clear, Color.accentColor.opacity(0.8), .clear],
                         startPoint: .leading,
                         endPoint: .trailing
                     )

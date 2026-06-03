@@ -22,13 +22,14 @@ enum AIAnalysisError: LocalizedError {
 actor AIAnalysisService {
     static let shared = AIAnalysisService()
 
-    // DeepSeek OpenAI-compatible endpoint
     private let endpoint = "https://api.deepseek.com/v1/chat/completions"
-    // deepseek-vl2 supports image input
-    private let model = "deepseek-vl2"
 
     private var apiKey: String {
         UserDefaults.standard.string(forKey: "deepseek_api_key") ?? ""
+    }
+
+    private var currentModel: String {
+        DeepSeekModel.stored.rawValue
     }
 
     func analyzeFood(image: UIImage) async throws -> NutritionInfo {
@@ -59,12 +60,11 @@ actor AIAnalysisService {
           "healthScore": 健康评分1到10的整数,
           "suggestion": "简短的饮食建议（中文，50字以内）"
         }
-        注意：热量单位为千卡(kcal)，营养素单位为克(g)。
+        热量单位千卡(kcal)，营养素单位克(g)。
         """
 
-        // DeepSeek uses OpenAI-compatible format with image_url content type
         let requestBody: [String: Any] = [
-            "model": model,
+            "model": currentModel,
             "max_tokens": 1024,
             "messages": [
                 [
@@ -121,7 +121,6 @@ actor AIAnalysisService {
     }
 
     private func extractJSON(from text: String) -> String {
-        // Strip possible markdown code fences like ```json ... ```
         var cleaned = text
         if let start = cleaned.range(of: "```json"),
            let end = cleaned.range(of: "```", range: start.upperBound..<cleaned.endIndex) {
@@ -130,7 +129,6 @@ actor AIAnalysisService {
                   let end = cleaned.range(of: "```", range: start.upperBound..<cleaned.endIndex) {
             cleaned = String(cleaned[start.upperBound..<end.lowerBound])
         }
-        // Find outermost JSON object
         if let start = cleaned.firstIndex(of: "{"),
            let end = cleaned.lastIndex(of: "}") {
             return String(cleaned[start...end])
