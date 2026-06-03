@@ -177,24 +177,33 @@ struct OAuthLoginView: View {
         }
     }
 
+    private var primaryButtonStyle: AnyShapeStyle {
+        authState == .approved ? AnyShapeStyle(Color.brand) : AnyShapeStyle(LinearGradient.oauth)
+    }
+
     private var actionButtons: some View {
         VStack(spacing: 12) {
             Button {
                 authorize()
             } label: {
-                Text("授权登录此设备")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 4)
+                Group {
+                    if authState == .approved {
+                        Label("授权成功", systemImage: "checkmark.circle.fill")
+                    } else {
+                        Text("授权登录此设备")
+                    }
+                }
+                .font(.headline)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(primaryButtonStyle, in: RoundedRectangle(cornerRadius: DS.innerRadius, style: .continuous))
+                .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
             .disabled(authState != .pending)
 
             Button {
-                withAnimation {
-                    authState = .denied
-                }
+                withAnimation { authState = .denied }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     dismiss()
                     onComplete()
@@ -202,17 +211,15 @@ struct OAuthLoginView: View {
             } label: {
                 Text("拒绝")
                     .font(.headline)
+                    .foregroundStyle(.red)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 15)
+                    .background(Color.red.opacity(0.10), in: RoundedRectangle(cornerRadius: DS.innerRadius, style: .continuous))
             }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .tint(.red)
+            .disabled(authState != .pending)
 
             Button {
-                withAnimation(.spring) {
-                    showDetails.toggle()
-                }
+                withAnimation(.spring) { showDetails.toggle() }
             } label: {
                 Text(showDetails ? "收起详情" : "查看详情")
                     .font(.caption)

@@ -12,44 +12,39 @@ struct WeightToolsView: View {
     @State private var showWeightEntry = false
     @State private var showSettings = false
 
-    private var latestWeight: Double? {
-        weightEntries.first?.weight
-    }
+    private var latestWeight: Double? { weightEntries.first?.weight }
 
     private var bmi: Double? {
         guard let w = latestWeight, heightCM > 0 else { return nil }
-        let hMeters = heightCM / 100
-        return w / (hMeters * hMeters)
+        let h = heightCM / 100
+        return w / (h * h)
     }
 
     private var bmiCategory: (String, Color) {
         guard let bmi else { return ("未知", .gray) }
         switch bmi {
-        case ..<18.5: return ("偏轻", .blue)
-        case 18.5..<24: return ("正常", .green)
-        case 24..<28: return ("超重", .orange)
-        default: return ("肥胖", .red)
+        case ..<18.5: return ("偏轻", .protein)
+        case 18.5..<24: return ("正常", .brand)
+        case 24..<28: return ("超重", .calorie)
+        default: return ("肥胖", .calorieDeep)
         }
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    // BMI card
+                VStack(spacing: DS.sectionSpacing) {
                     bmiCard
-
-                    // Weight chart
                     weightChartCard
-
-                    // Goals card
                     goalsCard
-
-                    // Calorie calculator
                     calorieCalculatorCard
+                    Spacer(minLength: 20)
                 }
-                .padding()
+                .padding(.horizontal, DS.spacing)
+                .padding(.top, 8)
             }
+            .scrollContentBackground(.hidden)
+            .screenBackground()
             .navigationTitle("减重工具")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -57,212 +52,193 @@ struct WeightToolsView: View {
                     Button {
                         showSettings = true
                     } label: {
-                        Image(systemName: "slider.horizontal.3")
+                        Image(systemName: "slider.horizontal.3").foregroundStyle(.brand)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showWeightEntry = true
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.circle.fill").foregroundStyle(.brand)
                     }
                 }
             }
             .sheet(isPresented: $showWeightEntry) {
                 WeightEntrySheet()
-                    .presentationDetents([.height(320)])
+                    .presentationDetents([.height(340)])
                     .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showSettings) {
-                HealthSettingsView(
-                    heightCM: $heightCM,
-                    targetWeight: $targetWeight,
-                    calorieGoal: $calorieGoal
-                )
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
+                HealthSettingsView(heightCM: $heightCM, targetWeight: $targetWeight, calorieGoal: $calorieGoal)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
             }
         }
     }
 
-    // MARK: - Cards
+    // MARK: - BMI Card
 
     private var bmiCard: some View {
         VStack(spacing: 16) {
-            HStack {
-                Text("BMI 指数")
-                    .font(.headline)
-                Spacer()
+            HStack(alignment: .firstTextBaseline) {
+                SectionHeader(title: "BMI 指数", systemImage: "figure.stand", tint: bmiCategory.1)
                 if let bmi {
                     Text(String(format: "%.1f", bmi))
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.system(.title, design: .rounded, weight: .bold))
                         .foregroundStyle(bmiCategory.1)
-                    Text(bmiCategory.0)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(bmiCategory.1)
+                    PillTag(text: bmiCategory.0, color: bmiCategory.1)
                 }
             }
 
-            // BMI scale bar
             BMIScaleView(bmi: bmi)
 
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("当前体重")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text(latestWeight.map { "\($0, specifier: "%.1f") kg" } ?? "未记录")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("当前体重").font(.caption).foregroundStyle(.secondary)
+                    Text(latestWeight.map { String(format: "%.1f kg", $0) } ?? "未记录")
+                        .font(.subheadline.weight(.semibold))
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("目标体重")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text("\(targetWeight, specifier: "%.1f") kg")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.tint)
+                VStack(alignment: .trailing, spacing: 3) {
+                    Text("目标体重").font(.caption).foregroundStyle(.secondary)
+                    Text(String(format: "%.1f kg", targetWeight))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.brand)
                 }
             }
 
             if let current = latestWeight {
                 let diff = current - targetWeight
-                if diff > 0 {
-                    Label("距目标还需减 \(diff, specifier: "%.1f") kg", systemImage: "arrow.down.circle.fill")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                } else if diff < 0 {
-                    Label("已超额完成目标！保持下去", systemImage: "checkmark.circle.fill")
-                        .font(.caption)
-                        .foregroundStyle(.green)
-                } else {
-                    Label("达到目标体重！", systemImage: "star.circle.fill")
-                        .font(.caption)
-                        .foregroundStyle(.yellow)
+                Group {
+                    if diff > 0.05 {
+                        Label("距目标还需减 \(String(format: "%.1f", diff)) kg", systemImage: "arrow.down.circle.fill")
+                            .foregroundStyle(.calorie)
+                    } else if diff < -0.05 {
+                        Label("已超额完成目标，保持下去！", systemImage: "checkmark.seal.fill")
+                            .foregroundStyle(.brand)
+                    } else {
+                        Label("已达到目标体重 🎉", systemImage: "star.circle.fill")
+                            .foregroundStyle(.fat)
+                    }
                 }
+                .font(.caption.weight(.medium))
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .padding(18)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 20))
+        .card()
     }
+
+    // MARK: - Weight Chart
 
     private var weightChartCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Label("体重趋势", systemImage: "chart.line.downtrend.xyaxis")
-                .font(.headline)
+            SectionHeader(title: "体重趋势", systemImage: "chart.line.downtrend.xyaxis")
 
             if weightEntries.count >= 2 {
                 Chart {
                     ForEach(weightEntries.prefix(14).reversed()) { entry in
+                        AreaMark(
+                            x: .value("日期", entry.date, unit: .day),
+                            y: .value("体重", entry.weight)
+                        )
+                        .foregroundStyle(LinearGradient(
+                            colors: [Color.brand.opacity(0.25), Color.brand.opacity(0.02)],
+                            startPoint: .top, endPoint: .bottom
+                        ))
+                        .interpolationMethod(.catmullRom)
+
                         LineMark(
                             x: .value("日期", entry.date, unit: .day),
                             y: .value("体重", entry.weight)
                         )
-                        .foregroundStyle(.tint)
+                        .foregroundStyle(Color.brand)
+                        .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
                         .interpolationMethod(.catmullRom)
 
                         PointMark(
                             x: .value("日期", entry.date, unit: .day),
                             y: .value("体重", entry.weight)
                         )
-                        .foregroundStyle(.tint)
-
-                        AreaMark(
-                            x: .value("日期", entry.date, unit: .day),
-                            y: .value("体重", entry.weight)
-                        )
-                        .foregroundStyle(.tint.opacity(0.1))
-                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(Color.brand)
+                        .symbolSize(40)
                     }
 
                     RuleMark(y: .value("目标", targetWeight))
                         .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 3]))
-                        .foregroundStyle(.orange)
-                        .annotation(position: .trailing) {
-                            Text("目标")
-                                .font(.caption2)
-                                .foregroundStyle(.orange)
+                        .foregroundStyle(Color.calorie)
+                        .annotation(position: .trailing, alignment: .leading) {
+                            Text("目标").font(.caption2).foregroundStyle(.calorie)
                         }
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
-                .frame(height: 160)
+                .frame(height: 170)
             } else {
-                Text("记录至少 2 天的体重数据后\n将显示趋势图")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 100)
+                emptyChartHint
             }
 
             Button {
                 showWeightEntry = true
             } label: {
-                Label("记录今日体重", systemImage: "plus.circle.fill")
+                Label("记录今日体重", systemImage: "plus")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.brand)
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 11)
+                    .background(Color.brand.opacity(0.12), in: RoundedRectangle(cornerRadius: DS.pillRadius, style: .continuous))
             }
-            .buttonStyle(.bordered)
         }
-        .padding(18)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 20))
+        .card()
     }
+
+    private var emptyChartHint: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "chart.xyaxis.line")
+                .font(.system(size: 32))
+                .foregroundStyle(.tertiary)
+            Text("记录至少 2 天体重\n即可查看趋势图")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 120)
+    }
+
+    // MARK: - Goals
 
     private var goalsCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Label("每日目标", systemImage: "target")
-                .font(.headline)
-
-            HStack(spacing: 16) {
-                GoalCell(
-                    icon: "flame.fill",
-                    color: .orange,
-                    value: "\(Int(calorieGoal))",
-                    unit: "kcal",
-                    label: "热量目标"
-                )
-                GoalCell(
-                    icon: "drop.fill",
-                    color: .blue,
-                    value: "2000",
-                    unit: "ml",
-                    label: "饮水目标"
-                )
-                GoalCell(
-                    icon: "figure.walk",
-                    color: .green,
-                    value: "8000",
-                    unit: "步",
-                    label: "步数目标"
-                )
+            SectionHeader(title: "每日目标", systemImage: "target")
+            HStack(spacing: 10) {
+                GoalCell(icon: "flame.fill", color: .calorie, value: "\(Int(calorieGoal))", unit: "kcal", label: "热量")
+                GoalCell(icon: "drop.fill", color: .protein, value: "2000", unit: "ml", label: "饮水")
+                GoalCell(icon: "figure.walk", color: .brand, value: "8000", unit: "步", label: "步数")
             }
         }
-        .padding(18)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 20))
+        .card()
     }
+
+    // MARK: - Calorie Calculator
 
     private var calorieCalculatorCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Label("推荐热量计算", systemImage: "function")
-                .font(.headline)
+            SectionHeader(title: "推荐热量", systemImage: "function")
 
             if let weight = latestWeight {
                 let bmr = 10 * weight + 6.25 * heightCM - 5 * 30 + 5
-                let deficit = bmr * 1.2 - 500
+                let maintain = bmr * 1.2
+                let deficit = maintain - 500
 
                 VStack(spacing: 10) {
-                    FormulaRow(label: "基础代谢率 (BMR)", value: "\(Int(bmr)) kcal")
-                    FormulaRow(label: "久坐维持热量 (×1.2)", value: "\(Int(bmr * 1.2)) kcal")
+                    FormulaRow(label: "基础代谢 (BMR)", value: "\(Int(bmr)) kcal")
+                    FormulaRow(label: "久坐维持 (×1.2)", value: "\(Int(maintain)) kcal")
                     Divider()
-                    FormulaRow(label: "减重建议热量 (−500)", value: "\(Int(deficit)) kcal", highlighted: true)
+                    FormulaRow(label: "减重建议 (−500)", value: "\(Int(deficit)) kcal", highlighted: true)
                 }
                 .padding(14)
-                .background(.tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Color.brand.opacity(0.06), in: RoundedRectangle(cornerRadius: DS.innerRadius, style: .continuous))
 
-                Text("* 基于 Mifflin-St Jeor 公式，假设年龄 30 岁男性")
+                Text("* 基于 Mifflin-St Jeor 公式，假设 30 岁男性")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             } else {
@@ -270,11 +246,10 @@ struct WeightToolsView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
-                    .padding()
+                    .padding(.vertical, 12)
             }
         }
-        .padding(18)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 20))
+        .card()
     }
 }
 
@@ -296,11 +271,9 @@ struct WeightEntrySheet: View {
                         TextField("kg", value: $weight, format: .number)
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.decimalPad)
-                        Text("kg")
-                            .foregroundStyle(.secondary)
+                        Text("kg").foregroundStyle(.secondary)
                     }
                 }
-
                 Section("备注（可选）") {
                     TextField("添加备注", text: $note)
                 }
@@ -313,11 +286,11 @@ struct WeightEntrySheet: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("保存") {
-                        let entry = WeightEntry(weight: weight, note: note)
-                        modelContext.insert(entry)
+                        modelContext.insert(WeightEntry(weight: weight, note: note))
                         dismiss()
                     }
                     .fontWeight(.semibold)
+                    .tint(.brand)
                 }
             }
         }
@@ -336,97 +309,82 @@ struct HealthSettingsView: View {
         NavigationStack {
             Form {
                 Section("身体数据") {
-                    HStack {
-                        Text("身高")
-                        Spacer()
-                        TextField("cm", value: $heightCM, format: .number)
-                            .multilineTextAlignment(.trailing)
-                            .keyboardType(.decimalPad)
-                        Text("cm")
-                            .foregroundStyle(.secondary)
-                    }
-                    HStack {
-                        Text("目标体重")
-                        Spacer()
-                        TextField("kg", value: $targetWeight, format: .number)
-                            .multilineTextAlignment(.trailing)
-                            .keyboardType(.decimalPad)
-                        Text("kg")
-                            .foregroundStyle(.secondary)
-                    }
+                    labeledField("身高", value: $heightCM, unit: "cm")
+                    labeledField("目标体重", value: $targetWeight, unit: "kg")
                 }
-
                 Section("每日目标") {
-                    HStack {
-                        Text("热量目标")
-                        Spacer()
-                        TextField("kcal", value: $calorieGoal, format: .number)
-                            .multilineTextAlignment(.trailing)
-                            .keyboardType(.decimalPad)
-                        Text("kcal")
-                            .foregroundStyle(.secondary)
-                    }
+                    labeledField("热量目标", value: $calorieGoal, unit: "kcal")
                 }
             }
             .navigationTitle("健康设置")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("完成") { dismiss() }
-                        .fontWeight(.semibold)
+                    Button("完成") { dismiss() }.fontWeight(.semibold).tint(.brand)
                 }
             }
         }
     }
+
+    private func labeledField(_ label: String, value: Binding<Double>, unit: String) -> some View {
+        HStack {
+            Text(label)
+            Spacer()
+            TextField(unit, value: value, format: .number)
+                .multilineTextAlignment(.trailing)
+                .keyboardType(.decimalPad)
+            Text(unit).foregroundStyle(.secondary)
+        }
+    }
 }
 
-// MARK: - Supporting Views
+// MARK: - BMI Scale
 
 struct BMIScaleView: View {
     let bmi: Double?
 
     private let segments: [(String, Color, ClosedRange<Double>)] = [
-        ("偏轻", .blue, 10...18.5),
-        ("正常", .green, 18.5...24),
-        ("超重", .orange, 24...28),
-        ("肥胖", .red, 28...40)
+        ("偏轻", .protein, 10...18.5),
+        ("正常", .brand, 18.5...24),
+        ("超重", .calorie, 24...28),
+        ("肥胖", .calorieDeep, 28...40)
     ]
 
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
-                HStack(spacing: 2) {
+                HStack(spacing: 3) {
                     ForEach(segments, id: \.0) { segment in
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(segment.1.opacity(0.25))
+                            .fill(segment.1.opacity(0.3))
                             .frame(width: segmentWidth(segment.2, total: geo.size.width))
                     }
                 }
-
                 if let bmi {
-                    let xPos = bmiPosition(bmi, total: geo.size.width)
                     Capsule()
                         .fill(.white)
-                        .shadow(radius: 4)
-                        .frame(width: 4, height: 24)
-                        .offset(x: xPos - 2)
+                        .frame(width: 5, height: 26)
+                        .overlay(Capsule().stroke(Color.primary.opacity(0.15), lineWidth: 1))
+                        .shadow(color: .black.opacity(0.2), radius: 3)
+                        .offset(x: position(bmi, total: geo.size.width) - 2.5)
                         .animation(.spring, value: bmi)
                 }
             }
         }
-        .frame(height: 20)
+        .frame(height: 22)
     }
 
     private func segmentWidth(_ range: ClosedRange<Double>, total: CGFloat) -> CGFloat {
-        let totalRange = 40.0 - 10.0
-        return CGFloat((range.upperBound - range.lowerBound) / totalRange) * total
+        CGFloat((range.upperBound - range.lowerBound) / 30.0) * (total - 9)
     }
 
-    private func bmiPosition(_ bmi: Double, total: CGFloat) -> CGFloat {
+    private func position(_ bmi: Double, total: CGFloat) -> CGFloat {
         let clamped = min(max(bmi, 10), 40)
         return CGFloat((clamped - 10) / 30) * total
     }
 }
+
+// MARK: - Goal Cell
 
 struct GoalCell: View {
     let icon: String
@@ -436,28 +394,26 @@ struct GoalCell: View {
     let label: String
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 7) {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundStyle(color)
-
             Text(value)
                 .font(.system(.subheadline, design: .rounded, weight: .bold))
-
             Text(unit)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
-
             Text(label)
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
-                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+        .padding(.vertical, 14)
+        .background(color.opacity(0.10), in: RoundedRectangle(cornerRadius: DS.pillRadius, style: .continuous))
     }
 }
+
+// MARK: - Formula Row
 
 struct FormulaRow: View {
     let label: String
@@ -468,13 +424,12 @@ struct FormulaRow: View {
         HStack {
             Text(label)
                 .font(.caption)
-                .foregroundStyle(highlighted ? .primary : .secondary)
+                .foregroundStyle(highlighted ? Color.primary : Color.secondary)
                 .fontWeight(highlighted ? .semibold : .regular)
             Spacer()
             Text(value)
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(highlighted ? Color.accentColor : Color.primary)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(highlighted ? Color.brand : Color.primary)
         }
     }
 }

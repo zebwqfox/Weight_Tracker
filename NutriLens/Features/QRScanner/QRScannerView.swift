@@ -135,6 +135,7 @@ struct QRScannerView: View {
                     viewModel.handleScannedCode("https://example.com/oauth/device?code=ABCD-1234")
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.brand)
             }
         }
         .ignoresSafeArea()
@@ -200,7 +201,7 @@ struct ScanLineView: View {
             Rectangle()
                 .fill(
                     LinearGradient(
-                        colors: [.clear, Color.accentColor.opacity(0.8), .clear],
+                        colors: [.clear, Color.brand.opacity(0.9), .clear],
                         startPoint: .leading,
                         endPoint: .trailing
                     )

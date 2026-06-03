@@ -24,6 +24,7 @@
 		AABBCC00000000000000070F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AABBCC00000000000000060F /* Assets.xcassets */; };
 		AABBCC000000000000000710 /* APIKeySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000611 /* APIKeySettingsView.swift */; };
 		AABBCC000000000000000711 /* DeepSeekModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000612 /* DeepSeekModel.swift */; };
+		AABBCC000000000000000713 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC000000000000000614 /* DesignSystem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		AABBCC00000000000000060F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AABBCC000000000000000611 /* APIKeySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySettingsView.swift; sourceTree = "<group>"; };
 		AABBCC000000000000000612 /* DeepSeekModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekModel.swift; sourceTree = "<group>"; };
+		AABBCC000000000000000614 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				AABBCC000000000000000601 /* NutriLensApp.swift */,
 				AABBCC000000000000000602 /* ContentView.swift */,
+				AABBCC000000000000000614 /* DesignSystem.swift */,
 				AABBCC0000000000000005B0 /* Features */,
 				AABBCC00000000000000050F /* Models */,
 				AABBCC000000000000000510 /* Services */,
@@ -240,6 +243,7 @@
 				AABBCC00000000000000070E /* AIAnalysisService.swift in Sources */,
 				AABBCC000000000000000710 /* APIKeySettingsView.swift in Sources */,
 				AABBCC000000000000000711 /* DeepSeekModel.swift in Sources */,
+				AABBCC000000000000000713 /* DesignSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

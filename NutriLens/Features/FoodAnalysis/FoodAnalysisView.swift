@@ -8,28 +8,29 @@ struct FoodAnalysisView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    // Hero card
-                    photoSelectionCard
-
-                    // Meal type picker
+                VStack(spacing: DS.sectionSpacing) {
+                    photoSection
                     if viewModel.selectedImage != nil {
                         mealTypePicker
                         analyzeButton
                     }
-
-                    Spacer(minLength: 40)
+                    Spacer(minLength: 30)
                 }
-                .padding()
+                .padding(.horizontal, DS.spacing)
+                .padding(.top, 8)
             }
+            .scrollContentBackground(.hidden)
+            .screenBackground()
             .navigationTitle("拍照分析")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("设置") {
+                    Button {
                         showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundStyle(.brand)
                     }
-                    .buttonStyle(.borderless)
                 }
             }
             .sheet(isPresented: $showSettings) {
@@ -57,99 +58,125 @@ struct FoodAnalysisView: View {
         }
     }
 
-    private var photoSelectionCard: some View {
-        VStack(spacing: 16) {
-            if let image = viewModel.selectedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 280)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .overlay(alignment: .topTrailing) {
-                        Button {
+    // MARK: - Photo Section
+
+    @ViewBuilder
+    private var photoSection: some View {
+        if let image = viewModel.selectedImage {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity)
+                .frame(height: 300)
+                .clipShape(RoundedRectangle(cornerRadius: DS.cardRadius, style: .continuous))
+                .overlay(alignment: .topTrailing) {
+                    Button {
+                        withAnimation {
                             viewModel.selectedImage = nil
                             viewModel.selectedPhotoItem = nil
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.title2)
-                                .foregroundStyle(.white)
-                                .shadow(radius: 4)
                         }
-                        .padding(12)
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(.ultraThinMaterial, in: Circle())
                     }
-            } else {
-                emptyPhotoPlaceholder
-            }
+                    .padding(12)
+                }
+                .shadow(color: .black.opacity(0.12), radius: 14, y: 6)
+        } else {
+            emptyPhotoPlaceholder
         }
     }
 
     private var emptyPhotoPlaceholder: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "fork.knife.circle")
-                .font(.system(size: 64))
-                .foregroundStyle(.tint)
+        VStack(spacing: 18) {
+            ZStack {
+                Circle()
+                    .fill(Color.brand.opacity(0.12))
+                    .frame(width: 96, height: 96)
+                Image(systemName: "fork.knife.circle.fill")
+                    .font(.system(size: 52))
+                    .foregroundStyle(LinearGradient.brand)
+            }
+            .padding(.top, 8)
 
-            Text("拍摄或选择今天的餐食")
-                .font(.title3)
-                .fontWeight(.semibold)
+            VStack(spacing: 6) {
+                Text("拍摄今天的餐食")
+                    .font(.title3.weight(.semibold))
+                Text("AI 将识别菜品并精准计算热量")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
 
-            Text("AI 将识别菜品并计算热量")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-
-            HStack(spacing: 16) {
-                PhotosPicker(selection: $viewModel.selectedPhotoItem, matching: .images) {
-                    Label("从相册选择", systemImage: "photo.on.rectangle")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-
+            HStack(spacing: 12) {
                 Button {
                     viewModel.showCamera = true
                 } label: {
                     Label("拍照", systemImage: "camera.fill")
+                        .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .foregroundStyle(.white)
+                        .background(LinearGradient.brand, in: RoundedRectangle(cornerRadius: DS.pillRadius, style: .continuous))
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.green)
+
+                PhotosPicker(selection: $viewModel.selectedPhotoItem, matching: .images) {
+                    Label("相册", systemImage: "photo.on.rectangle")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .foregroundStyle(.brand)
+                        .background(Color.brand.opacity(0.12), in: RoundedRectangle(cornerRadius: DS.pillRadius, style: .continuous))
+                }
             }
+            .padding(.top, 4)
         }
-        .padding(32)
-        .frame(maxWidth: .infinity)
-        .background(.quaternary, in: RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .strokeBorder(.quaternary, lineWidth: 2)
-        )
+        .padding(24)
+        .card()
         .fullScreenCover(isPresented: $viewModel.showCamera) {
             CameraPickerView(image: $viewModel.selectedImage)
                 .ignoresSafeArea()
         }
     }
 
+    // MARK: - Meal Type Picker
+
     private var mealTypePicker: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("餐食类型")
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader(title: "餐食类型", systemImage: "clock.fill")
+                .padding(.horizontal, 4)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(FoodEntry.mealTypes, id: \.self) { type in
-                        Button(type) {
-                            viewModel.mealType = type
+                        let selected = viewModel.mealType == type
+                        Button {
+                            withAnimation(.snappy) { viewModel.mealType = type }
+                        } label: {
+                            Text(type)
+                                .font(.subheadline.weight(selected ? .semibold : .regular))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 9)
+                                .foregroundStyle(selected ? .white : Color.primary)
+                                .background {
+                                    if selected {
+                                        Capsule().fill(LinearGradient.brand)
+                                    } else {
+                                        Capsule().fill(Color.card)
+                                    }
+                                }
                         }
-                        .buttonStyle(.bordered)
-                        .tint(viewModel.mealType == type ? Color.accentColor : Color.secondary)
-                        .fontWeight(viewModel.mealType == type ? .semibold : .regular)
                     }
                 }
-                .padding(.horizontal, 2)
+                .padding(.horizontal, 4)
             }
         }
     }
+
+    // MARK: - Analyze Button
 
     private var analyzeButton: some View {
         Button {
@@ -157,23 +184,23 @@ struct FoodAnalysisView: View {
         } label: {
             Group {
                 if viewModel.isAnalyzing {
-                    HStack(spacing: 12) {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                            .tint(.white)
-                        Text("AI 分析中...")
+                    HStack(spacing: 10) {
+                        ProgressView().tint(.white)
+                        Text("AI 分析中…")
                     }
                 } else {
                     Label("开始分析", systemImage: "sparkles")
                 }
             }
             .font(.headline)
+            .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 4)
+            .padding(.vertical, 16)
+            .background(LinearGradient.brand, in: RoundedRectangle(cornerRadius: DS.innerRadius, style: .continuous))
+            .shadow(color: Color.brand.opacity(0.35), radius: 12, y: 5)
         }
-        .buttonStyle(.borderedProminent)
         .disabled(viewModel.isAnalyzing)
-        .controlSize(.large)
+        .opacity(viewModel.isAnalyzing ? 0.85 : 1)
     }
 }
 
@@ -192,16 +219,11 @@ struct CameraPickerView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
 
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: CameraPickerView
-
-        init(_ parent: CameraPickerView) {
-            self.parent = parent
-        }
+        init(_ parent: CameraPickerView) { self.parent = parent }
 
         func imagePickerController(
             _ picker: UIImagePickerController,

@@ -6,9 +6,7 @@ struct DailyFoodLogView: View {
     @Environment(\.modelContext) var modelContext
 
     @State private var selectedDate = Date.now
-    @State private var calorieGoal: Double = UserDefaults.standard.double(forKey: "calorie_goal") == 0
-        ? 2000
-        : UserDefaults.standard.double(forKey: "calorie_goal")
+    @AppStorage("calorie_goal") private var calorieGoal: Double = 2000
 
     private var todayEntries: [FoodEntry] {
         let calendar = Calendar.current
@@ -20,49 +18,58 @@ struct DailyFoodLogView: View {
     }
 
     private var calorieProgress: Double {
-        min(totalCaloriesToday / calorieGoal, 1.0)
+        guard calorieGoal > 0 else { return 0 }
+        return min(totalCaloriesToday / calorieGoal, 1.0)
+    }
+
+    private var remaining: Int {
+        max(0, Int(calorieGoal - totalCaloriesToday))
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    // Date selector
-                    dateSelectorCard
-
-                    // Calorie ring summary
-                    calorieSummarySection
-
-                    // Meal entries
+                VStack(spacing: DS.sectionSpacing) {
+                    dateSelector
+                    heroCard
                     if todayEntries.isEmpty {
                         emptyState
                     } else {
                         mealEntriesSection
                     }
                 }
-                .padding()
+                .padding(.horizontal, DS.spacing)
+                .padding(.bottom, 30)
             }
+            .scrollContentBackground(.hidden)
+            .screenBackground()
             .navigationTitle("今日饮食")
             .navigationBarTitleDisplayMode(.large)
         }
     }
 
-    private var dateSelectorCard: some View {
+    // MARK: - Date Selector
+
+    private var dateSelector: some View {
         HStack {
             Button {
-                selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                shift(by: -1)
             } label: {
                 Image(systemName: "chevron.left")
-                    .fontWeight(.semibold)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.brand)
+                    .frame(width: 38, height: 38)
+                    .background(Color.card, in: Circle())
             }
-            .buttonStyle(.bordered)
 
             Spacer()
 
             VStack(spacing: 2) {
                 Text(selectedDate.formatted(.dateTime.month(.wide).day()))
                     .font(.headline)
-                Text(Calendar.current.isDateInToday(selectedDate) ? "今天" : selectedDate.formatted(.dateTime.weekday(.wide)))
+                Text(Calendar.current.isDateInToday(selectedDate)
+                     ? "今天"
+                     : selectedDate.formatted(.dateTime.weekday(.wide)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -70,69 +77,93 @@ struct DailyFoodLogView: View {
             Spacer()
 
             Button {
-                if !Calendar.current.isDateInToday(selectedDate) {
-                    selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
-                }
+                if !Calendar.current.isDateInToday(selectedDate) { shift(by: 1) }
             } label: {
                 Image(systemName: "chevron.right")
-                    .fontWeight(.semibold)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(Calendar.current.isDateInToday(selectedDate) ? Color.gray.opacity(0.4) : Color.brand)
+                    .frame(width: 38, height: 38)
+                    .background(Color.card, in: Circle())
             }
-            .buttonStyle(.bordered)
             .disabled(Calendar.current.isDateInToday(selectedDate))
         }
     }
 
-    private var calorieSummarySection: some View {
-        HStack(spacing: 20) {
-            // Calorie ring
-            ZStack {
-                Circle()
-                    .stroke(.quaternary, lineWidth: 10)
-
-                Circle()
-                    .trim(from: 0, to: calorieProgress)
-                    .stroke(
-                        calorieProgress > 0.9 ? Color.red : Color.orange,
-                        style: StrokeStyle(lineWidth: 10, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
-                    .animation(.spring(response: 0.6), value: calorieProgress)
-
-                VStack(spacing: 2) {
-                    Text("\(Int(totalCaloriesToday))")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
-                    Text("kcal")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .frame(width: 100, height: 100)
-
-            VStack(alignment: .leading, spacing: 10) {
-                StatRow(label: "目标", value: "\(Int(calorieGoal)) kcal", color: .blue)
-                StatRow(label: "已摄入", value: "\(Int(totalCaloriesToday)) kcal", color: .orange)
-                StatRow(
-                    label: "剩余",
-                    value: "\(max(0, Int(calorieGoal - totalCaloriesToday))) kcal",
-                    color: totalCaloriesToday > calorieGoal ? .red : .green
-                )
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+    private func shift(by days: Int) {
+        withAnimation(.snappy) {
+            selectedDate = Calendar.current.date(byAdding: .day, value: days, to: selectedDate) ?? selectedDate
         }
-        .padding(20)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 20))
     }
+
+    // MARK: - Hero Card
+
+    private var heroCard: some View {
+        VStack(spacing: 20) {
+            HStack(alignment: .center, spacing: 24) {
+                calorieRing
+                VStack(alignment: .leading, spacing: 12) {
+                    statLine(label: "目标", value: Int(calorieGoal), color: .white.opacity(0.85))
+                    statLine(label: "已摄入", value: Int(totalCaloriesToday), color: .white)
+                    statLine(label: "剩余", value: remaining, color: .white.opacity(0.95))
+                }
+                Spacer(minLength: 0)
+            }
+        }
+        .padding(24)
+        .background(LinearGradient.brand, in: RoundedRectangle(cornerRadius: DS.cardRadius, style: .continuous))
+        .shadow(color: Color.brand.opacity(0.35), radius: 18, y: 8)
+    }
+
+    private var calorieRing: some View {
+        ZStack {
+            Circle()
+                .stroke(.white.opacity(0.25), lineWidth: 11)
+
+            Circle()
+                .trim(from: 0, to: calorieProgress)
+                .stroke(.white, style: StrokeStyle(lineWidth: 11, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.spring(response: 0.6), value: calorieProgress)
+
+            VStack(spacing: 1) {
+                Text("\(Int(totalCaloriesToday))")
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("kcal")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.8))
+            }
+        }
+        .frame(width: 112, height: 112)
+    }
+
+    private func statLine(label: String, value: Int, color: Color) -> some View {
+        HStack(spacing: 8) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.75))
+                .frame(width: 44, alignment: .leading)
+            Text("\(value)")
+                .font(.system(.title3, design: .rounded, weight: .bold))
+                .foregroundStyle(color)
+            Text("kcal")
+                .font(.caption2)
+                .foregroundStyle(.white.opacity(0.7))
+        }
+    }
+
+    // MARK: - Meal Entries
 
     private var mealEntriesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("今日餐食")
-                .font(.headline)
+            SectionHeader(title: "今日餐食", systemImage: "fork.knife")
+                .padding(.horizontal, 4)
 
             ForEach(todayEntries) { entry in
                 FoodEntryCard(entry: entry)
-                    .swipeActions(edge: .trailing) {
+                    .contextMenu {
                         Button(role: .destructive) {
-                            modelContext.delete(entry)
+                            withAnimation { modelContext.delete(entry) }
                         } label: {
                             Label("删除", systemImage: "trash")
                         }
@@ -141,97 +172,83 @@ struct DailyFoodLogView: View {
         }
     }
 
+    // MARK: - Empty State
+
     private var emptyState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "fork.knife.circle")
-                .font(.system(size: 50))
-                .foregroundStyle(.quaternary)
-
+        VStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color.brand.opacity(0.12))
+                    .frame(width: 88, height: 88)
+                Image(systemName: "fork.knife")
+                    .font(.system(size: 36, weight: .medium))
+                    .foregroundStyle(.brand)
+            }
             Text("今天还没有记录")
-                .font(.title3)
-                .fontWeight(.medium)
-                .foregroundStyle(.secondary)
-
-            Text("点击「拍照分析」拍下你的餐食")
+                .font(.title3.weight(.semibold))
+            Text("切换到「拍照分析」，拍下你的餐食")
                 .font(.subheadline)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
+        .padding(.vertical, 44)
+        .card()
     }
 }
 
-// MARK: - Supporting Views
-
-struct StatRow: View {
-    let label: String
-    let value: String
-    let color: Color
-
-    var body: some View {
-        HStack {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Text(value)
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(color)
-        }
-    }
-}
+// MARK: - Food Entry Card
 
 struct FoodEntryCard: View {
     let entry: FoodEntry
 
     var body: some View {
         HStack(spacing: 14) {
-            if let data = entry.imageData, let image = UIImage(data: data) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            } else {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.quaternary)
-                    .frame(width: 60, height: 60)
-                    .overlay {
-                        Image(systemName: "fork.knife")
-                            .foregroundStyle(.tertiary)
-                    }
-            }
+            thumbnail
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text(entry.mealType)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 2)
-                        .background(.tint.opacity(0.15), in: Capsule())
-                        .foregroundStyle(.tint)
-
+                    PillTag(text: entry.mealType)
                     Spacer()
-
                     Text(entry.date.formatted(.dateTime.hour().minute()))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
 
-                Text(entry.dishes.prefix(3).joined(separator: "  "))
-                    .font(.subheadline)
+                Text(entry.dishes.prefix(3).joined(separator: " · "))
+                    .font(.subheadline.weight(.medium))
                     .lineLimit(1)
 
-                Text("\(Int(entry.totalCalories)) kcal")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.orange)
+                HStack(spacing: 4) {
+                    Image(systemName: "flame.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.calorie)
+                    Text("\(Int(entry.totalCalories)) kcal")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.calorie)
+                }
             }
         }
-        .padding(12)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+        .card(padding: 12)
+    }
+
+    private var thumbnail: some View {
+        Group {
+            if let data = entry.imageData, let image = UIImage(data: data) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                ZStack {
+                    LinearGradient.soft(.brand).opacity(0.18)
+                    Image(systemName: "fork.knife")
+                        .font(.title3)
+                        .foregroundStyle(.brand)
+                }
+            }
+        }
+        .frame(width: 64, height: 64)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
